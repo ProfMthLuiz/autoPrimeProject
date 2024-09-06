@@ -1,0 +1,144 @@
+* {
+  box-sizing: border-box; /* Inclui o padding e a borda no cálculo da largura e altura dos elementos */
+  padding: 0; /* Remove o padding padrão de todos os elementos */
+  margin: 0; /* Remove o margin padrão de todos os elementos */
+  text-decoration: none; /* Remove o sublinhado dos links por padrão */
+}
+
+.Titulo {
+  height: 10rem; /* Define a altura das seções como 10rem */
+  display: flex; /* Usa Flexbox para o layout das seções */
+  align-items: center; /* Alinha verticalmente os itens no centro da seção */
+}
+
+.imgback {
+  background-image: url("../../assets/images/concessionaria-f1rst-motors-em-dubai-1656945205320_v2_1x1.jpg");
+}
+
+.imgback .opacity {
+  background: rgba(0, 0, 0, 0.5);
+  padding: 10px;
+}
+
+.curiosidades h2 {
+  text-align: center;
+}
+
+.cards {
+  display: flex;
+  justify-content: space-between; /* Espaço igual entre os cards */
+  align-items: center;
+  gap: 10px; /* Espaço entre os cards */
+  flex-wrap: wrap; /* Permite que os cards se movam para a linha seguinte se necessário */
+  padding: 20px; /* Espaçamento interno da seção */
+  overflow: hidden;
+}
+.cards .card {
+  width: 250px;
+  height: 200px;
+  perspective: 800px;
+}
+
+.card_inner {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 1.5s;
+  transform-style: preserve-3d;
+}
+
+.card:hover > .card_inner {
+  cursor: pointer;
+  transform: rotateY(180deg);
+}
+
+.cards .card_front,
+.cards .card_back {
+  width: 100%;
+  height: 100%;
+  border-radius: 2rem;
+  box-shadow: 0 0 5px 2px rgba(0, 0, 0, 0.5);
+  backface-visibility: hidden;
+  position: absolute;
+  overflow: hidden;
+}
+
+.cards .card_back {
+  transform: rotateY(180deg);
+  background-color: #000000;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.cards .card_front img {
+  width: 100%;
+  height: 100%;
+}
+
+.cards .card_back h2 {
+  color: #fff;
+}
+
+.carousel {
+  position: relative;
+  width: 500px;
+  margin-left: 33%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  border: 2px solid #ddd;
+  border-radius: 8px;
+}
+
+.carousel-inner {
+  display: flex;
+  transition: transform 0.5s ease;
+}
+
+.carousel-item {
+  min-width: 100%;
+  box-sizing: border-box;
+}
+
+.carousel-control {
+  position: absolute;
+  top: 50%;
+  width: 40px;
+  height: 40px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  text-align: center;
+  line-height: 40px;
+  font-size: 24px;
+  cursor: pointer;
+  border-radius: 50%;
+  transform: translateY(-50%);
+  z-index: 100;
+}
+
+.carousel-control.prev {
+  left: 10px;
+}
+
+.carousel-control.next {
+  right: 10px;
+}
+
+.introducaocarro {
+  color: white;
+  padding: 10px;
+}
+
+.imagens {
+  display: flex;
+  justify-content: space-evenly;
+  align-items: center;
+}
+
+.imagens img {
+  height: 200px;
+  width: 200px;
+}

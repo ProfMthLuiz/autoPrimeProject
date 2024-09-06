@@ -1,0 +1,106 @@
+.containerRecSenha {
+  background-color: #000000; /* Fundo preto */
+  color: #ffffff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  overflow: hidden; /* Evita rolagem indesejada */
+}
+
+.container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80%;
+  max-width: 500px;
+  background-color: rgba(0, 0, 0, 0.8);
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+.logo {
+  margin-bottom: 20px;
+}
+
+.logo img {
+  width: 200px; /* Ajuste o tamanho da logo conforme necessário */
+  height: auto;
+}
+
+h1 {
+  font-size: 2rem;
+  color: #f6220a;
+  margin-bottom: 20px;
+  text-align: center;
+}
+
+.recovery_box {
+  background-color: #1a1a1a;
+  padding: 40px;
+  border-radius: 10px;
+  width: 100%;
+  max-width: 400px;
+  box-shadow: -5px -5px 10px red;
+}
+
+.recovery_box h2 {
+  text-align: center;
+  margin-bottom: 20px;
+  color: #f6220a;
+}
+
+.recovery_box input {
+  width: calc(100% - 22px); /* Ajusta a largura dos campos de entrada */
+  padding: 10px;
+  margin: 10px 0;
+  border: none;
+  border-radius: 5px;
+}
+
+.recovery_box input[type="email"] {
+  background-color: #333;
+  color: #f6220a;
+}
+
+.recovery_box input[type="submit"] {
+  color: #f6220a;
+  color: #000;
+  cursor: pointer;
+  border: none;
+}
+
+.recovery_box input[type="submit"]:hover {
+  color: #f6220a;
+}
+
+.back_to_login {
+  margin-top: 15px;
+  text-align: center;
+}
+
+.back_to_login a {
+  color: #f6220a;
+  text-decoration: none;
+}
+
+.back_to_login a:hover {
+  text-decoration: underline;
+}
+
+/* Responsividade */
+@media (max-width: 600px) {
+  .logo img {
+    width: 150px; /* Reduz o tamanho da logo em telas menores */
+  }
+
+  h1 {
+    font-size: 1.5rem;
+  }
+
+  .recovery_box {
+    padding: 20px;
+  }
+}
