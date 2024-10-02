@@ -108,7 +108,7 @@ function RegisterUser() {
               />
             </div>
             <div className={styles.input_group}>
-              <label htmlFor="celular">CPF</label>
+              <label htmlFor="cpf">CPF</label>
               <input
                 type="text"
                 value={cpf}
