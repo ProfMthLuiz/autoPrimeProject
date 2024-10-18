@@ -24,20 +24,15 @@ function Menu() {
         <i className="bx bx-x" id="closeIcon"></i>
       </label>
       <nav className="navbar">
-        <NavLink to="/">
-          <a style={{ "--i": 2 }} href="#">
-            Home
-          </a>
+        {/* Remove as tags <a> aninhadas dentro de NavLink */}
+        <NavLink to="/" style={{ "--i": 2 }}>
+          Home
         </NavLink>
-        <NavLink to="/registerCars">
-          <a style={{ "--i": 2 }} href="#">
-            Marketplace
-          </a>
+        <NavLink to="/registerCars" style={{ "--i": 2 }}>
+          Marketplace
         </NavLink>
-        <NavLink to="/contact">
-          <a style={{ "--i": 2 }} href="#">
-            Contato
-          </a>
+        <NavLink to="/contact" style={{ "--i": 2 }}>
+          Contato
         </NavLink>
 
         <div
