@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import styles from "./Login.module.css";
 import axios from "axios";
 import imgLogoLogin from "../../assets/images/logo.jfif";
+import { useNavigate } from "react-router-dom";
 
 function Login() {
   const [email, setEmail] = useState("");
@@ -9,24 +10,36 @@ function Login() {
   const [success, setSuccess] = useState("");
   const [error, setError] = useState("");
 
+  const navigate = useNavigate(); // Hook do React Router
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     try {
       const response = await axios.post(
         "http://localhost:3001/login",
-        {
-          email,
-          password,
-        },
-        {
-          headers: {
-            "Content-Type": "application/json", // Definir o tipo de conteúdo como JSON
-          },
-        }
+        { email, password },
+        { headers: { "Content-Type": "application/json" } }
       );
+
+      if (response.data.success) {
+        setSuccess(response.data.message);
+        setError("");
+
+        // Armazena o accessToken e refreshToken no sessionStorage
+        sessionStorage.setItem("accessToken", response.data.accessToken);
+        sessionStorage.setItem("refreshToken", response.data.refreshToken);
+
+        // Redireciona para o dashboard
+        navigate("/dashboard");
+      }
     } catch (error) {
-      console.error("Erro ao fazer login: ", error);
+      if (error.response && error.response.data) {
+        setError(error.response.data.message);
+        setSuccess("");
+      } else {
+        setError("Erro ao fazer login. Tente novamente.");
+      }
     }
   };
 

@@ -6,6 +6,8 @@ const path = require("path");
 const cors = require("cors");
 const fs = require("fs");
 const bcrypt = require("bcrypt");
+const jwt = require("jsonwebtoken");
+require("dotenv").config();
 
 const app = express();
 const port = 3001;
@@ -21,6 +23,7 @@ app.use(cors());
 
 // Middleware para processar JSON
 app.use(bodyParser.json());
+app.use("/uploads", express.static(uploadDir)); // Certifique-se de usar o diretório "uploads"
 
 // Configuração do multer para upload de imagens
 const storage = multer.diskStorage({
@@ -40,6 +43,18 @@ const db = mysql.createConnection({
   password: "",
   database: "autoprimebd",
 });
+
+const generateAccessToken = (user) => {
+  return jwt.sign({ id: user.id, email: user.email }, process.env.JWT_SECRET, {
+    expiresIn: process.env.JWT_EXPIRATION, // ex: 1h
+  });
+};
+
+const generateRefreshToken = (user) => {
+  return jwt.sign({ id: user.id }, process.env.JWT_REFRESH_SECRET, {
+    expiresIn: process.env.JWT_REFRESH_EXPIRATION, // ex: 7d
+  });
+};
 
 // Rota para cadastrar carros
 app.post("/registerCars", upload.array("fotos", 10), (req, res) => {
@@ -144,13 +159,13 @@ app.post("/registerUser", async (req, res) => {
   );
 });
 
-// Rota de login
+// Rota de login (corrigida)
 app.post("/login", (req, res) => {
   const { email, password } = req.body;
 
   // Busca o usuário no banco de dados
-  const query = "SELECT * FROM users WHERE email = ?";
-  db.query(query, [email], (err, results) => {
+  const query = "SELECT * FROM usuarios WHERE email = ?";
+  db.query(query, [email], async (err, results) => {
     if (err) {
       console.error("Erro ao buscar o usuário no banco: ", err);
       return res
@@ -167,28 +182,73 @@ app.post("/login", (req, res) => {
 
     const user = results[0];
 
-    // Verifica se a senha está correta (para este exemplo simples, sem hashing)
-    if (password !== user.password) {
+    // Verifica se a senha está correta usando bcrypt
+    const isMatch = await bcrypt.compare(password, user.senha);
+    if (!isMatch) {
       return res
         .status(401)
         .json({ success: false, message: "Senha incorreta." });
     }
 
-    // Se tudo estiver correto, envia a mensagem de sucesso
-    return res
-      .status(200)
-      .json({ success: true, message: "Login bem-sucedido!" });
+    // Gerar tokens
+    const accessToken = generateAccessToken(user);
+    const refreshToken = generateRefreshToken(user);
+
+    // Você pode salvar o refresh token no banco de dados ou em memória
+    // Exemplo: Salvar o refresh token no banco de dados associado ao usuário
+
+    return res.status(200).json({
+      success: true,
+      message: "Login bem-sucedido!",
+      accessToken,
+      refreshToken,
+    });
   });
+});
+
+const authenticateToken = (req, res, next) => {
+  const authHeader = req.headers["authorization"];
+  const token = authHeader && authHeader.split(" ")[1]; // Bearer TOKEN
+
+  if (!token) return res.status(401).json({ message: "Token ausente." });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
+    if (err) return res.status(403).json({ message: "Token inválido." });
+
+    req.user = user; // Salva o usuário no request
+    next();
+  });
+};
+
+app.post("/token", (req, res) => {
+  const { refreshToken } = req.body;
+
+  if (!refreshToken) {
+    return res.status(401).json({ message: "Refresh token ausente." });
+  }
+
+  jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET, (err, user) => {
+    if (err)
+      return res.status(403).json({ message: "Refresh token inválido." });
+
+    const newAccessToken = generateAccessToken({
+      id: user.id,
+      email: user.email,
+    });
+    res.json({ accessToken: newAccessToken });
+  });
+});
+
+app.post("/logout", (req, res) => {
+  const { refreshToken } = req.body;
+  // Aqui você pode remover o refresh token da lista ou banco
+  res.json({ message: "Logout bem-sucedido." });
 });
 
 db.connect((err) => {
   if (err) throw err;
   console.log("Conectado ao banco de dados!");
 });
-
-// Middleware
-app.use(bodyParser.json());
-app.use("/uploads", express.static(uploadDir)); // Certifique-se de usar o diretório "uploads"
 
 app.listen(port, () => {
   console.log(`Servidor rodando na porta ${port}`);

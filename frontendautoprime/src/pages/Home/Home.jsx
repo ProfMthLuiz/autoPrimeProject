@@ -1,6 +1,11 @@
 import React from "react";
 
 import imgMarketplace from "../../assets/images/dodge.jpg";
+import imgFerrari from "../../assets/images/ferrari.jpg";
+import imgFord from "../../assets/images/fordGT.png";
+import img911 from "../../assets/images/porsche.jpg";
+import imgAMG from "../../assets/images/mercedes.jpg";
+
 import "./Home.css";
 
 function Home() {
@@ -33,7 +38,7 @@ function Home() {
             <div className="card">
               <div className="card_inner">
                 <div className="card_front">
-                  <img src={imgMarketplace} alt="" />
+                  <img src={imgFord} alt="" />
                 </div>
                 <div className="card_back">
                   <h2>Ford GT</h2>
@@ -52,7 +57,7 @@ function Home() {
             <div className="card">
               <div className="card_inner">
                 <div className="card_front">
-                  <img src={imgMarketplace} alt="" />
+                  <img src={imgFerrari} alt="" />
                 </div>
                 <div className="card_back">
                   <h2>Ferrari F430</h2>
@@ -71,7 +76,7 @@ function Home() {
             <div className="card">
               <div className="card_inner">
                 <div className="card_front">
-                  <img src={imgMarketplace} alt="" />
+                  <img src={img911} alt="" />
                 </div>
                 <div className="card_back">
                   <h2>Porsche 911</h2>
@@ -90,7 +95,7 @@ function Home() {
             <div className="card">
               <div className="card_inner">
                 <div className="card_front">
-                  <img src={imgMarketplace} alt="" />
+                  <img src={imgAMG} alt="" />
                 </div>
                 <div className="card_back">
                   <h2>Mercedes AMG</h2>

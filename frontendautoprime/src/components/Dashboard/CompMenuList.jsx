@@ -6,7 +6,7 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 
-const CompMenuList = ({ darkTheme, setActiveContent }) => {
+const CompMenuList = ({ darkTheme, setActiveContent, handleLogout }) => {
   const menuItems = [
     {
       key: "dashboard",
@@ -42,7 +42,7 @@ const CompMenuList = ({ darkTheme, setActiveContent }) => {
       key: "logout",
       icon: <LogoutOutlined />,
       label: "Logout",
-      onClick: () => setActiveContent("logout"),
+      onClick: handleLogout,
     },
   ];
 
