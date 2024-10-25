@@ -86,6 +86,19 @@ app.post("/registerCars", upload.array("fotos", 10), (req, res) => {
   );
 });
 
+app.get("/anuncios", (req, res) => {
+  const query = "SELECT * FROM carros";
+  db.query(query, (err, results) => {
+    if (err) {
+      console.error("Erro ao buscar dados da tabela carros:", err);
+      console.log("eroooooo");
+      return res.status(500).json({ message: "Erro ao buscar os carros." });
+    }
+    res.json(results);
+    console.log(results);
+  });
+});
+
 // Rota para cadastrar usuários
 app.post("/registerUser", async (req, res) => {
   const {
