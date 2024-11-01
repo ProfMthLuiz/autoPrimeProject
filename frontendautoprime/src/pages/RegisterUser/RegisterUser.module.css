@@ -84,3 +84,11 @@ button {
 button:hover {
   background-color: #565555;
 }
+
+.success {
+  color: rgb(106, 255, 106);
+}
+
+.error {
+  color: #ff0000;
+}

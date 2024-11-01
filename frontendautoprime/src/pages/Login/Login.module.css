@@ -106,3 +106,11 @@ h1 {
     padding: 20px;
   }
 }
+
+.success {
+  color: rgb(106, 255, 106);
+}
+
+.error {
+  color: #ff0000;
+}

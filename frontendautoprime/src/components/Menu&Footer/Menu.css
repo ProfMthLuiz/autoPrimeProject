@@ -1,49 +1,42 @@
 * {
-  box-sizing: border-box; /* Inclui o padding e a borda no cálculo da largura e altura dos elementos */
-  padding: 0; /* Remove o padding padrão de todos os elementos */
-  margin: 0; /* Remove o margin padrão de todos os elementos */
-  text-decoration: none; /* Remove o sublinhado dos links por padrão */
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  text-decoration: none;
 }
 
 .header {
-  position: fixed; /* Faz com que o cabeçalho fique fixo no topo da página */
-  top: 0; /* Alinha o cabeçalho ao topo da página */
-  left: 0; /* Alinha o cabeçalho à esquerda da página */
-  width: 100%; /* Faz com que o cabeçalho ocupe toda a largura da página */
-  padding: 1rem 10%; /* Adiciona padding interno ao cabeçalho */
-  display: flex; /* Usa Flexbox para o layout do cabeçalho */
-  justify-content: space-between; /* Espaça os itens dentro do cabeçalho igualmente, com espaço entre eles */
-  align-items: center; /* Alinha verticalmente os itens no centro do cabeçalho */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 1rem 10%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   z-index: 1000;
 }
 
 h2 {
-  color: red; /* Define a cor do texto dos elementos <h2> como vermelho */
+  color: red;
 }
 
 .Titulo {
-  height: 10rem; /* Define a altura das seções como 10rem */
-  display: flex; /* Usa Flexbox para o layout das seções */
-  align-items: center; /* Alinha verticalmente os itens no centro da seção */
+  height: 10rem;
+  display: flex;
+  align-items: center;
 }
 
 .header::before {
-  content: ""; /* Adiciona um pseudo-elemento vazio antes do conteúdo do cabeçalho */
-  position: absolute; /* Posiciona o pseudo-elemento de forma absoluta em relação ao cabeçalho */
-  top: 0; /* Alinha o pseudo-elemento ao topo do cabeçalho */
-  left: 0; /* Alinha o pseudo-elemento à esquerda do cabeçalho */
-  width: 100%; /* Faz com que o pseudo-elemento ocupe toda a largura do cabeçalho */
-  height: 100%; /* Faz com que o pseudo-elemento ocupe toda a altura do cabeçalho */
-  background: rgba(
-    0,
-    0,
-    0,
-    0.5
-  ); /* Adiciona um fundo semitransparente preto ao pseudo-elemento */
-  backdrop-filter: blur(
-    50px
-  ); /* Aplica um desfoque ao fundo atrás do cabeçalho */
-  z-index: -11; /* Coloca o pseudo-elemento atrás do conteúdo do cabeçalho */
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  backdrop-filter: blur(50px);
+  z-index: -11;
 }
 
 .logo {
@@ -61,82 +54,80 @@ h2 {
 }
 
 .header::after {
-  content: ""; /* Adiciona um pseudo-elemento vazio após o conteúdo do cabeçalho */
-  position: absolute; /* Posiciona o pseudo-elemento de forma absoluta em relação ao cabeçalho */
-  top: 0; /* Alinha o pseudo-elemento ao topo do cabeçalho */
-  right: -100%; /* Posiciona o pseudo-elemento fora da tela à direita */
-  height: 100%; /* Faz com que o pseudo-elemento ocupe toda a altura do cabeçalho */
-  width: 100%; /* Faz com que o pseudo-elemento ocupe toda a largura do cabeçalho */
+  content: "";
+  position: absolute;
+  top: 0;
+  right: -100%;
+  height: 100%;
+  width: 100%;
   background: linear-gradient(
     90deg,
     transparent,
     black,
     rgba(255, 0, 0, 0.582),
     transparent
-  ); /* Adiciona um gradiente preto transparente para criar um efeito de transição */
-  transition: 0.5s; /* Define a duração da transição para o efeito de gradiente */
+  );
+  transition: 0.5s;
   z-index: -10;
 }
 
 .header:hover::after {
-  right: 100%; /* Move o pseudo-elemento para a direita da tela quando o cabeçalho é hoverado */
+  right: 100%;
 }
 
 .navbar {
   z-index: 30;
+  display: flex;
 }
 
-.navbar a {
-  font-size: 1rem; /* Define o tamanho da fonte dos links de navegação como 1rem */
-  color: red; /* Define a cor do texto dos links de navegação como preto */
-  font-weight: 500; /* Define o peso da fonte dos links de navegação como semi-negrito */
-  margin-left: 2.5rem; /* Adiciona uma margem à esquerda dos links de navegação */
+.navbar a,
+.navbar .anticon {
+  font-size: 1rem;
+  color: red;
+  font-weight: 500;
+  margin-left: 1.5rem;
   transition: all 0.3s ease;
 }
 
 .navbar a:hover {
-  color: #fff; /* Define a cor do texto dos links de navegação como branco quando o mouse passa sobre eles */
+  color: #fff;
 }
 
 #check {
-  display: none; /* Esconde o checkbox utilizado para controlar o menu móvel */
+  display: none;
 }
 
 .icons {
-  position: absolute; /* Posiciona os ícones de forma absoluta em relação ao cabeçalho */
-  right: 5%; /* Alinha os ícones a 5% da borda direita do cabeçalho */
-  font-size: 2.8rem; /* Define o tamanho da fonte dos ícones como 2.8rem */
-  color: #ff0000; /* Define a cor dos ícones como preto */
-  cursor: pointer; /* Define o cursor como ponteiro ao passar sobre os ícones */
-  display: none; /* Esconde os ícones por padrão */
+  position: absolute;
+  right: 5%;
+  font-size: 2.8rem;
+  color: #ff0000;
+  cursor: pointer;
+  display: none;
 }
 
 /* -- Breakpoints -- */
 @media (max-width: 992px) {
-  /* Estilos para dispositivos com largura máxima de 992px */
-
   .header {
-    padding: 1rem 5%; /* Reduz o padding do cabeçalho para 5% nas laterais em telas menores */
+    padding: 1rem 5%;
   }
 }
 
 @media (max-width: 768px) {
-  /* Estilos para dispositivos com largura máxima de 768px */
-
   .icons {
-    display: inline-flex; /* Exibe os ícones como flexíveis em linha */
+    display: inline-flex;
   }
 
   #check:checked ~ .icons #menuIcon {
-    display: none; /* Esconde o ícone de menu quando o checkbox está marcado */
+    display: none;
   }
 
   .icons #closeIcon {
-    display: none; /* Esconde o ícone de fechar por padrão */
+    display: none;
   }
 
   #check:checked ~ .icons #closeIcon {
-    display: block; /* Exibe o ícone de fechar quando o checkbox está marcado */
+    display: block;
   }
 
   .navbar {
@@ -145,12 +136,7 @@ h2 {
     right: 0;
     width: 100%;
     height: 0;
-    background: rgba(
-      0,
-      0,
-      0,
-      0.5
-    ); /* Adiciona um fundo semitransparente preto ao pseudo-elemento */
+    background: rgba(0, 0, 0, 0.5);
     backdrop-filter: blur(50px);
     overflow: hidden;
     transition: 0.3s ease;
@@ -160,25 +146,65 @@ h2 {
   }
 
   #check:checked ~ .navbar {
-    height: 50vh; /* Define a altura da barra de navegação para 50% da altura da visualização quando o checkbox está marcado */
+    height: 100vh;
   }
 
   .navbar a {
-    display: block; /* Exibe os links da barra de navegação como blocos */
-    font-size: 1rem; /* Define o tamanho da fonte dos links como 1rem */
-    margin: 20px 0; /* Adiciona margens superior e inferior de 20px aos links */
-    text-align: center; /* Centraliza o texto dos links */
-    transform: translateY(-50px); /* Move os links 50px para cima por padrão */
-    opacity: 0; /* Define a opacidade dos links como 0 por padrão */
+    display: block;
+    font-size: 1rem;
+    margin: 20px 0;
+    text-align: center;
+    transform: translateY(-50px);
+    opacity: 0;
   }
 
   #check:checked ~ .navbar a {
-    transform: translateY(
-      0
-    ); /* Move os links para a posição original quando o checkbox está marcado */
-    transition-delay: calc(
-      0.15s * var(--i)
-    ); /* Adiciona um atraso à transição baseado na variável --i */
-    opacity: 1; /* Define a opacidade dos links como 1 quando o checkbox está marcado */
+    transform: translateY(0);
+    transition-delay: calc(0.15s * var(--i));
+    opacity: 1;
   }
+}
+
+.login {
+  height: 50px;
+  width: 150px;
+  background-color: aqua;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  color: #ff0000;
+}
+
+.login spam {
+  width: 100px;
+}
+
+/* Dropdown Menu Styles */
+.user-icon {
+  position: relative; /* Para posicionar o dropdown em relação ao ícone */
+  cursor: pointer; /* Muda o cursor para ponteiro */
+}
+
+.dropdown-menu {
+  position: absolute; /* Posiciona o menu de forma absoluta em relação ao ícone */
+  left: 0; /* Alinha o menu à direita */
+  top: 100%; /* Posiciona o menu logo abaixo do ícone */
+  background-color: rgba(0, 0, 0, 0.8); /* Fundo semi-transparente */
+  color: white; /* Cor do texto */
+  border-radius: 5px; /* Bordas arredondadas */
+  padding: 0.5rem; /* Adiciona padding interno */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra */
+  z-index: 100; /* Para garantir que fique acima de outros elementos */
+  display: flex;
+  flex-direction: column; /* Alinha os itens verticalmente */
+}
+
+.dropdown-menu a {
+  color: white; /* Cor do texto dos links */
+  padding: 0.5rem 1rem; /* Adiciona padding aos links */
+  transition: background-color 0.3s; /* Transição suave para o fundo */
+}
+
+.dropdown-menu a:hover {
+  background-color: rgba(255, 0, 0, 0.7); /* Fundo quando passa o mouse */
 }
