@@ -299,9 +299,6 @@ app.post("/login", (req, res) => {
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
 
-    // Você pode salvar o refresh token no banco de dados ou em memória
-    // Exemplo: Salvar o refresh token no banco de dados associado ao usuário
-
     return res.status(200).json({
       success: true,
       message: "Login bem-sucedido!",
