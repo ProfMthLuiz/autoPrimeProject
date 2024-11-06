@@ -8,7 +8,7 @@ import RegisterCars from "./pages/RegisterCars/RegisterCars";
 import RegisterUser from "./pages/RegisterUser/RegisterUser";
 import Dashboard from "./components/Dashboard/Dashboard";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
-import Anuncios from "./pages/anuncios/cars";
+import Marketplace from "./pages/Marketplace/Marketplace";
 
 function App() {
   return (
@@ -21,7 +21,7 @@ function App() {
           <Route path="/recuperarSenha" element={<RecuperarSenha />} />
           <Route path="/registerCars" element={<RegisterCars />} />
           <Route path="/registerUser" element={<RegisterUser />} />
-          <Route path="/anuncios" element={<Anuncios />} />
+          <Route path="/marketplace" element={<Marketplace />} />
 
           {/* Rota protegida pelo PrivateRoute */}
           <Route
