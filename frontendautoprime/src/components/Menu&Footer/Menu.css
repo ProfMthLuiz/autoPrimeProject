@@ -190,7 +190,6 @@ h2 {
   left: 0; /* Alinha o menu à direita */
   top: 100%; /* Posiciona o menu logo abaixo do ícone */
   background-color: rgba(0, 0, 0, 0.8); /* Fundo semi-transparente */
-  color: white; /* Cor do texto */
   border-radius: 5px; /* Bordas arredondadas */
   padding: 0.5rem; /* Adiciona padding interno */
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.5); /* Sombra */
@@ -200,11 +199,7 @@ h2 {
 }
 
 .dropdown-menu a {
-  color: white; /* Cor do texto dos links */
+  color: #ff0000; /* Cor do texto dos links */
   padding: 0.5rem 1rem; /* Adiciona padding aos links */
   transition: background-color 0.3s; /* Transição suave para o fundo */
-}
-
-.dropdown-menu a:hover {
-  background-color: rgba(255, 0, 0, 0.7); /* Fundo quando passa o mouse */
 }
