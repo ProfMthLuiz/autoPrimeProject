@@ -9,6 +9,7 @@ import RegisterUser from "./pages/RegisterUser/RegisterUser";
 import Dashboard from "./components/Dashboard/Dashboard";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import Anuncios from "./pages/anuncios/cars";
+import Contato from "./pages/contato/Contato";
 
 function App() {
   return (
@@ -22,7 +23,7 @@ function App() {
           <Route path="/registerCars" element={<RegisterCars />} />
           <Route path="/registerUser" element={<RegisterUser />} />
           <Route path="/anuncios" element={<Anuncios />} />
-
+          <Route path="/contact" element={<Contato />} />
           {/* Rota protegida pelo PrivateRoute */}
           <Route
             path="/dashboard"

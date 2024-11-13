@@ -7,7 +7,7 @@ export default function Cars() {
 
   const fetchAnuncios = async () => {
     try {
-      const response = await axios.get("http://10.144.170.37:3001/anuncios");
+      const response = await axios.get("http://localhost:3001/anuncios");
       setAnuncios(response.data);
       console.log(anuncios);
     } catch (error) {

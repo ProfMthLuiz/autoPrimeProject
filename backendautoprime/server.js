@@ -258,6 +258,30 @@ app.post("/logout", (req, res) => {
   res.json({ message: "Logout bem-sucedido." });
 });
 
+// Rota para salvar o contato
+app.post("/salvarContato", (req, res) => {
+  const { nome, email, mensagem } = req.body;
+
+  // Verificar se todos os campos foram preenchidos
+  if (!nome || !email || !mensagem) {
+    return res.status(400).json({
+      message: "Por favor, preencha todos os campos.",
+    });
+  }
+
+  // Inserir no banco de dados
+  const query = "INSERT INTO contatos (nome, email, mensagem) VALUES (?, ?, ?)";
+
+  db.query(query, [nome, email, mensagem], (err, result) => {
+    if (err) {
+      console.error("Erro ao salvar contato no banco de dados: ", err);
+      return res.status(500).json({ message: "Erro ao salvar o contato." });
+    }
+
+    res.status(201).json({ message: "Contato enviado com sucesso!" });
+  });
+});
+
 db.connect((err) => {
   if (err) throw err;
   console.log("Conectado ao banco de dados!");
