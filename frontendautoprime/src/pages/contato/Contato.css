@@ -1,0 +1,76 @@
+/* Estilização do fundo e layout principal */
+.contato_container {
+  background-size: cover;
+  background-position: center;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+}
+
+.background_overlay {
+  background-color: rgba(
+    0,
+    0,
+    0,
+    0.6
+  ); /* Sobreposição escura para melhorar a legibilidade */
+  padding: 40px;
+  border-radius: 10px;
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+}
+
+h1 {
+  font-size: 2em;
+  margin-bottom: 0.5em;
+}
+
+p {
+  font-size: 1.1em;
+  margin-bottom: 1em;
+}
+
+/* Estilização do formulário */
+.contato_form {
+  display: flex;
+  flex-direction: column;
+}
+
+.contato_form label {
+  margin-top: 10px;
+  font-size: 1em;
+  color: #ddd;
+}
+
+.contato_form input,
+.contato_form textarea {
+  margin-top: 5px;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  font-size: 1em;
+}
+
+.contato_form textarea {
+  resize: none;
+  height: 100px;
+}
+
+.contato_form button {
+  margin-top: 15px;
+  padding: 10px;
+  font-size: 1.1em;
+  color: #fff;
+  background-color: #ff5733;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.contato_form button:hover {
+  background-color: #e84318;
+}
