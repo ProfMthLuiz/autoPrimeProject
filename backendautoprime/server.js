@@ -18,12 +18,18 @@ if (!fs.existsSync(uploadDir)) {
   fs.mkdirSync(uploadDir);
 }
 
-// Configuração do CORS
-app.use(cors());
+// Middleware para verificar o token JWT
+const verifyToken = (req, res, next) => {
+  const token = req.headers["authorization"]?.split(" ")[1];
 
-// Middleware para processar JSON
-app.use(bodyParser.json());
-app.use("/uploads", express.static(uploadDir)); // Certifique-se de usar o diretório "uploads"
+  if (!token) return res.status(403).json({ message: "Token não fornecido." });
+
+  jwt.verify(token, process.env.JWT_SECRET, (err, decoded) => {
+    if (err) return res.status(401).json({ message: "Token inválido." });
+    req.userId = decoded.id; // Passa o ID do usuário autenticado
+    next();
+  });
+};
 
 // Configuração do multer para upload de imagens
 const storage = multer.diskStorage({
@@ -55,6 +61,15 @@ const generateRefreshToken = (user) => {
     expiresIn: process.env.JWT_REFRESH_EXPIRATION, // ex: 7d
   });
 };
+
+// Configuração do CORS
+app.use(cors());
+
+// Middleware para processar JSON
+app.use(bodyParser.json());
+
+// Certifique-se de usar o diretório "uploads"
+app.use("/uploads", express.static(uploadDir));
 
 // Rota para cadastrar carros
 app.post("/registerCars", upload.array("fotos", 10), (req, res) => {
@@ -88,66 +103,78 @@ app.post("/registerCars", upload.array("fotos", 10), (req, res) => {
 
 // Rota para buscar carros com filtros e paginação
 app.get("/cars/catalogo", (req, res) => {
-  const { precoMax, marca, modelo, ano, page = 1, limit = 12 } = req.query;
+  const {
+    precoMax,
+    precoMin,
+    marca,
+    modelo,
+    ano,
+    page = 1,
+    limit = 12,
+    busca,
+  } = req.query;
 
-  // Validação dos parâmetros de paginação
-  if (isNaN(page) || page < 1) {
-    return res.status(400).json({ message: "Página inválida." });
+  let filters = [];
+  let queryParams = [];
+
+  // Filtro de marca
+  if (marca && marca.length > 0) {
+    filters.push(`marca IN (?)`);
+    queryParams.push(marca);
   }
-  if (isNaN(limit) || limit < 1) {
-    return res.status(400).json({ message: "Limite inválido." });
+
+  // Filtro de modelo
+  if (modelo && modelo.length > 0) {
+    filters.push(`modelo IN (?)`);
+    queryParams.push(modelo);
   }
 
-  const offset = (page - 1) * limit;
+  // Filtro de ano
+  if (ano && ano.length > 0) {
+    filters.push(`ano IN (?)`);
+    queryParams.push(ano);
+  }
 
-  let query = "SELECT * FROM carros WHERE 1=1";
-  let countQuery = "SELECT COUNT(*) as total FROM carros WHERE 1=1";
-  let params = [];
-
-  // Adicionando filtros de preço
+  // Filtro de preço máximo
   if (precoMax) {
-    query += " AND preco <= ?";
-    countQuery += " AND preco <= ?";
-    params.push(precoMax);
+    filters.push(`preco <= ?`);
+    queryParams.push(precoMax);
   }
 
-  // Adicionando filtro de marca
-  if (marca) {
-    query += " AND marca LIKE ?";
-    countQuery += " AND marca LIKE ?";
-    params.push(`%${marca}%`);
+  // Filtro de preço mínimo
+  if (precoMin) {
+    filters.push(`preco >= ?`);
+    queryParams.push(precoMin);
   }
 
-  // Adicionando filtro de modelo
-  if (modelo) {
-    query += " AND modelo LIKE ?";
-    countQuery += " AND modelo LIKE ?";
-    params.push(`%${modelo}%`);
+  // Filtro de busca
+  if (busca) {
+    filters.push(`(marca LIKE ? OR modelo LIKE ?)`);
+    const searchTerm = `%${busca}%`;
+    queryParams.push(searchTerm, searchTerm);
   }
 
-  // Adicionando filtro de ano
-  if (ano) {
-    query += " AND ano = ?";
-    countQuery += " AND ano = ?";
-    params.push(ano);
-  }
+  // Combina os filtros com a consulta
+  const whereClause =
+    filters.length > 0 ? `WHERE ${filters.join(" AND ")}` : "";
 
-  // Adicionando paginação
-  query += " LIMIT ? OFFSET ?";
-  params.push(parseInt(limit), offset);
+  // Consulta para contar o número total de carros com os filtros aplicados
+  const countQuery = `SELECT COUNT(*) AS total FROM carros ${whereClause}`;
 
-  // Primeiro, obtém o total de registros para calcular o total de páginas
-  db.query(countQuery, params.slice(0, -2), (countErr, countResult) => {
-    if (countErr) {
-      console.error("Erro ao contar carros:", countErr);
+  db.query(countQuery, queryParams, (err, countResult) => {
+    if (err) {
+      console.error("Erro ao contar carros:", err);
       return res.status(500).json({ message: "Erro ao buscar carros." });
     }
 
-    const totalItems = countResult[0].total;
-    const totalPages = Math.ceil(totalItems / limit);
+    const totalCars = countResult[0].total;
+    const totalPages = Math.ceil(totalCars / limit);
 
-    // Executa a consulta com paginação para obter os carros filtrados
-    db.query(query, params, (err, results) => {
+    // Definir a consulta para buscar os carros com paginação
+    const query = `SELECT * FROM carros ${whereClause} LIMIT ?, ?`;
+    queryParams.push((page - 1) * limit, parseInt(limit)); // Paginando os resultados
+
+    db.query(query, queryParams, (err, results) => {
       if (err) {
         console.error("Erro ao buscar carros:", err);
         return res.status(500).json({ message: "Erro ao buscar carros." });
@@ -155,39 +182,9 @@ app.get("/cars/catalogo", (req, res) => {
 
       res.json({
         results,
-        page: parseInt(page),
         totalPages,
-        totalItems,
       });
     });
-  });
-});
-
-// Rota para buscar sugestões de marcas ou modelos
-app.get("/cars/autoComplete", (req, res) => {
-  const { query } = req.query;
-
-  // Verifica se o parâmetro de busca foi fornecido
-  if (!query) {
-    return res.status(400).json({ message: "A consulta é obrigatória." });
-  }
-
-  // Consulta ao banco de dados para buscar marcas e modelos
-  const searchQuery = `%${query}%`;
-  const queryString =
-    "SELECT DISTINCT marca, modelo FROM carros WHERE marca LIKE ? OR modelo LIKE ? LIMIT 10";
-  db.query(queryString, [searchQuery, searchQuery], (err, results) => {
-    if (err) {
-      console.error("Erro ao buscar sugestões:", err);
-      return res.status(500).json({ message: "Erro ao buscar sugestões." });
-    }
-
-    // Mapeia as sugestões para um formato que o AutoComplete do Ant Design pode usar
-    const suggestions = results.map((result) => ({
-      value: result.modelo, // Ou use result.marca se quiser sugerir marcas também
-    }));
-
-    res.json({ suggestions });
   });
 });
 
@@ -345,6 +342,67 @@ app.post("/logout", (req, res) => {
   const { refreshToken } = req.body;
   // Aqui você pode remover o refresh token da lista ou banco
   res.json({ message: "Logout bem-sucedido." });
+});
+
+// Rota para excluir um carro pelo ID
+app.delete("/cars/:id", verifyToken, (req, res) => {
+  const { id } = req.params;
+
+  // Verifica se o ID foi fornecido
+  if (!id) {
+    return res.status(400).json({ message: "ID do carro não fornecido." });
+  }
+
+  // Consulta para deletar o carro do banco de dados
+  const deleteQuery = "DELETE FROM carros WHERE id_cars = ?";
+
+  db.query(deleteQuery, [id], (err, result) => {
+    if (err) {
+      console.error("Erro ao excluir carro:", err);
+      return res.status(500).json({ message: "Erro ao excluir carro." });
+    }
+
+    // Verifica se algum registro foi afetado
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ message: "Carro não encontrado." });
+    }
+
+    res.status(200).json({ message: "Carro excluído com sucesso!" });
+  });
+});
+
+app.get("/cars/autoComplete", (req, res) => {
+  const { query } = req.query;
+
+  if (!query) {
+    return res
+      .status(400)
+      .json({ message: "Parâmetro de busca é obrigatório" });
+  }
+
+  // Ajuste para garantir modelos únicos
+  const searchQuery = `
+    SELECT DISTINCT modelo, marca
+    FROM carros
+    WHERE modelo LIKE ? OR marca LIKE ?
+    ORDER BY modelo ASC
+    LIMIT 10
+  `;
+
+  const searchValue = `%${query}%`;
+
+  db.query(searchQuery, [searchValue, searchValue], (err, results) => {
+    if (err) {
+      console.error("Erro ao buscar sugestões de autocomplete:", err);
+      return res.status(500).json({ message: "Erro no servidor" });
+    }
+
+    const suggestions = results.map((item) => ({
+      value: item.modelo, // Só estamos retornando o modelo, para não haver duplicatas
+    }));
+
+    res.json({ suggestions });
+  });
 });
 
 db.connect((err) => {

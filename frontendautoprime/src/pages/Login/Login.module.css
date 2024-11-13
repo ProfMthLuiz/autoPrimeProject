@@ -1,55 +1,44 @@
 .containerLogin {
-  background-color: #000000; /* Fundo preto */
+  background-color: #1a1a1a;
   color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
-  overflow: hidden; /* Evita rolagem indesejada */
 }
 
-.containerLogin .container {
+.login_box {
   display: flex;
-  flex-direction: column;
-  justify-content: center;
   align-items: center;
-  width: 90%; /* Ajuste para melhorar a responsividade */
-  max-width: 500px;
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 20px;
+  flex-direction: column;
+  background-color: #1a1a1a;
+  padding: 40px;
   border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  margin-top: 50px;
+  width: 550px;
+  box-shadow: 5px 5px 10px red;
 }
 
-.logo {
-  margin-bottom: 20px;
+.login_box img {
+  width: 150px;
 }
 
-.logo img {
-  width: 200px; /* Ajuste o tamanho da logo conforme necessário */
-  height: auto;
-}
-
-h1 {
+.login_box h1 {
   font-size: 2rem;
   color: #f6220a;
   margin-bottom: 20px;
   text-align: center;
-}
-
-.login_box {
-  background-color: #1a1a1a;
-  padding: 40px;
-  border-radius: 10px;
-  width: 100%;
-  max-width: 400px;
-  box-shadow: 5px 5px 10px red;
+  text-transform: uppercase;
 }
 
 .login_box h2 {
   text-align: center;
   margin-bottom: 20px;
   color: #f6220a;
+}
+
+.login_box form {
+  width: 100%;
 }
 
 .login_box input {
@@ -85,7 +74,20 @@ h1 {
 
 .forgot_password a {
   color: #f6220a;
+  display: block;
   text-decoration: none;
+}
+
+.forgot_password span {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.forgot_password span a {
+  margin-left: 5px;
 }
 
 .forgot_password a:hover {

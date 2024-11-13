@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import styles from "./Marketplace.module.css";
 import { SearchOutlined } from "@ant-design/icons";
 import { AutoComplete, Input } from "antd";
@@ -16,27 +16,26 @@ const Marketplace = () => {
     modelo: [],
     ano: [],
     precoMax: "",
-    precoMin: 0, // Inicializado com 0, mas vamos atualizar isso mais tarde.
+    precoMin: 0,
     busca: "",
   });
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [maxPrice, setMaxPrice] = useState(1000);
-  const [minPrice, setMinPrice] = useState(0); // Estado para o menor valor de preço.
+  const [minPrice, setMinPrice] = useState(0);
   const [maxPriceCalled, setMaxPriceCalled] = useState(false);
   const [autoCompleteOptions, setAutoCompleteOptions] = useState([]);
 
   useEffect(() => {
+    // Sempre que os filtros ou a página mudarem, buscamos os carros
     fetchCarros();
-    // console.log(JSON.parse(carros[3].imagens)[0]);
-    // console.log(typeof JSON.parse(carros[3].imagens));
-  }, [filtros, page]);
+  }, [filtros, page]); // Isso garante que a API seja chamada corretamente ao alterar filtros ou a página
 
   useEffect(() => {
     if (carros.length > 0) {
       if (!maxPriceCalled) {
         highestPrice();
-        lowestPrice(); // Calcular o menor preço
+        lowestPrice();
         setMaxPriceCalled(true);
       }
       extractAttributes(carros);
@@ -53,7 +52,7 @@ const Marketplace = () => {
         modelo: filtros.modelo,
         ano: filtros.ano,
         precoMax: filtros.precoMax,
-        precoMin: filtros.precoMin, // Passando o preço mínimo para o backend
+        precoMin: filtros.precoMin,
         busca: filtros.busca,
       };
 
@@ -90,23 +89,20 @@ const Marketplace = () => {
 
   const lowestPrice = () => {
     const min = Math.min(...carros.map((carro) => carro.preco));
-    setMinPrice(min); // Atualiza o valor mínimo do preço
+    setMinPrice(min);
     setFiltros((prevFiltros) => ({
       ...prevFiltros,
-      precoMin: min, // Atualiza o filtro com o valor mínimo
+      precoMin: min,
     }));
   };
 
   const handleCheckboxChange = (e, filterKey) => {
     const { value, checked } = e.target;
 
-    // Certifique-se de que o valor do filtro de ano é convertido para inteiro
-    const newValue = filterKey === "ano" ? parseInt(value, 10) : value;
-
     setFiltros((prevFiltros) => {
       const updatedFilterValues = checked
-        ? [...prevFiltros[filterKey], newValue]
-        : prevFiltros[filterKey].filter((item) => item !== newValue);
+        ? [...prevFiltros[filterKey], value]
+        : prevFiltros[filterKey].filter((item) => item !== value);
 
       return {
         ...prevFiltros,
@@ -117,22 +113,87 @@ const Marketplace = () => {
     setPage(1);
   };
 
-  const handleSearchChange = debounce(async (value) => {
-    setFiltros((prevFiltros) => ({ ...prevFiltros, busca: value }));
-    try {
-      const response = await axios.get("http://localhost:3001/cars/search", {
-        params: { busca: value },
-      });
-      setAutoCompleteOptions(
-        response.data.map((carro) => ({
-          value: carro.nome,
-          label: carro.nome,
-        }))
-      );
-    } catch (error) {
-      console.error("Erro ao buscar sugestões:", error);
+  const handleRangeChange = (e) => {
+    // Atualiza o preço sem chamar imediatamente o fetch
+    const precoMaxValue = e.target.value;
+    setFiltros((prevFiltros) => ({
+      ...prevFiltros,
+      precoMax: precoMaxValue,
+    }));
+  };
+
+  const fetchAutoComplete = async (value) => {
+    // Não realizar a busca se a string for menor que 3 caracteres
+    if (value.length < 0) {
+      setAutoCompleteOptions([]);
+      return;
     }
-  }, 300);
+
+    try {
+      const response = await axios.get(
+        "http://localhost:3001/cars/autoComplete",
+        {
+          params: { query: value },
+        }
+      );
+
+      const options = response.data.suggestions.map((item) => ({
+        value: item.value,
+      }));
+
+      setAutoCompleteOptions(options);
+    } catch (error) {
+      console.error("Erro ao buscar sugestões de autocomplete:", error);
+    }
+  };
+
+  // Debounce para otimizar as chamadas de autocomplete
+  const debouncedFetchAutoComplete = useCallback(
+    debounce((value) => {
+      fetchAutoComplete(value);
+    }, 300),
+    []
+  );
+
+  // Debounce para otimizar as chamadas de autocomplete
+  const debouncedFetchAutoCarros = useCallback(
+    debounce((value) => {
+      handleRangeChange(value);
+    }, 300),
+    []
+  );
+
+  const onSelect = (value) => {
+    setFiltros((prev) => ({
+      ...prev,
+      busca: value,
+      modelo: [value],
+    }));
+    setPage(1);
+  };
+
+  const onSearchChange = (value) => {
+    // Se a busca estiver vazia, reseta todos os filtros
+    setFiltros((prev) => ({
+      ...prev,
+      busca: value,
+      ...(value === "" && {
+        marca: [],
+        modelo: [],
+        ano: [],
+        precoMax: "",
+        precoMin: 0,
+      }),
+    }));
+    setPage(1);
+
+    // Chama o debounced fetch de autocomplete
+    if (value.length >= 1) {
+      debouncedFetchAutoComplete(value);
+    } else {
+      setAutoCompleteOptions([]); // Limpar opções se menos de 3 caracteres
+    }
+  };
 
   return (
     <section className={styles.marketplace}>
@@ -140,13 +201,13 @@ const Marketplace = () => {
         <div className={styles.search_box}>
           <AutoComplete
             options={autoCompleteOptions}
-            onSearch={handleSearchChange}
+            onSearch={onSearchChange}
+            onSelect={onSelect}
             style={{ width: "100%" }}
+            placeholder=""
+            allowClear
           >
-            <Input
-              prefix={<SearchOutlined />}
-              placeholder="Buscar por nome, modelo ou ano"
-            />
+            <Input prefix={<SearchOutlined />} name="search_txt" />
           </AutoComplete>
         </div>
       </div>
@@ -156,8 +217,8 @@ const Marketplace = () => {
           <form id="filtroForm">
             <div className={styles.filtro_item}>
               <h2 className={styles.title}>Marca</h2>
-              {marcas.map((marca, index) => (
-                <label key={index} className={styles.custom_checkbox}>
+              {marcas.map((marca) => (
+                <label key={marca} className={styles.custom_checkbox}>
                   <input
                     type="checkbox"
                     value={marca}
@@ -171,8 +232,8 @@ const Marketplace = () => {
             </div>
             <div className={styles.filtro_item}>
               <h2 className={styles.title}>Modelo</h2>
-              {modelos.map((modelo, index) => (
-                <label key={index} className={styles.custom_checkbox}>
+              {modelos.map((modelo) => (
+                <label key={modelo} className={styles.custom_checkbox}>
                   <input
                     type="checkbox"
                     value={modelo}
@@ -186,35 +247,35 @@ const Marketplace = () => {
             </div>
             <div className={styles.filtro_item}>
               <h2 className={styles.title}>Ano</h2>
-              {anos.map((ano, index) => (
-                <label key={index} className={styles.custom_checkbox}>
+              {anos.map((ano) => (
+                <label key={ano} className={styles.custom_checkbox}>
                   <input
                     type="checkbox"
-                    value={ano.toString()} // Certifique-se de passar como string ou int, conforme o caso
+                    value={ano.toString()}
                     onChange={(e) => handleCheckboxChange(e, "ano")}
-                    checked={filtros.ano.includes(ano)}
+                    checked={filtros.ano.includes(ano.toString())}
                   />
                   <span className={styles.checkmark}></span>
                   {ano}
                 </label>
               ))}
             </div>
-
             <div className={styles.filtro_item}>
               <h2 className={styles.title}>Preço</h2>
-              <input
-                type="range"
-                min={minPrice} // Usando o menor preço encontrado
-                max={maxPrice}
-                value={filtros.precoMax}
-                onChange={(e) =>
-                  setFiltros((prev) => ({
-                    ...prev,
-                    precoMax: e.target.value,
-                  }))
-                }
-              />
-              <span>{filtros.precoMax}</span>
+              <div className={styles.price}>
+                <input
+                  className={styles.price_range}
+                  type="range"
+                  min={minPrice}
+                  max={maxPrice}
+                  step="100"
+                  value={filtros.precoMax || maxPrice}
+                  onChange={handleRangeChange}
+                />
+                <span>
+                  <strong>R${filtros.precoMax || maxPrice}</strong>
+                </span>
+              </div>
             </div>
           </form>
         </aside>
@@ -229,7 +290,7 @@ const Marketplace = () => {
                   <div className={styles.imgBx}>
                     <img
                       src={
-                        carro.imagens && carro.imagens.length > 0
+                        carro.imagens && JSON.parse(carro.imagens).length > 0
                           ? `http://localhost:3001/uploads/${
                               JSON.parse(carro.imagens)[0]
                             }`
@@ -268,24 +329,3 @@ const Marketplace = () => {
 };
 
 export default Marketplace;
-
-{
-  /* <div key={carro.id} className={styles.card}>
-<div className={styles.imgBx}>
-  <img
-    src={
-      carro.imagens && carro.imagens.length > 0
-        ? `http://localhost:3001/uploads/${
-            JSON.parse(carro[0].imagens)[0]
-          }`
-        : "/path/to/default/image.jpg"
-    }
-    alt={carro.modelo}
-  />
-</div>
-<div className={styles.contentBx}>
-  <h2>{carro.modelo}</h2>
-  <a href="#">Comprar Agora</a>
-</div>
-</div> */
-}

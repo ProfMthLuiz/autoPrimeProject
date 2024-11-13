@@ -1,24 +1,11 @@
 .containerRecSenha {
-  background-color: #000000; /* Fundo preto */
+  background-color: #1f1f1f; /* Fundo preto */
   color: #ffffff;
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   overflow: hidden; /* Evita rolagem indesejada */
-}
-
-.container {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  width: 80%;
-  max-width: 500px;
-  background-color: rgba(0, 0, 0, 0.8);
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 .logo {
@@ -38,18 +25,30 @@ h1 {
 }
 
 .recovery_box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+
   background-color: #1a1a1a;
   padding: 40px;
   border-radius: 10px;
-  width: 100%;
-  max-width: 400px;
+  width: 500px;
   box-shadow: -5px -5px 10px red;
 }
 
-.recovery_box h2 {
+.recovery_box h1 {
   text-align: center;
   margin-bottom: 20px;
   color: #f6220a;
+}
+
+.recovery_box img {
+  width: 150px;
+}
+
+.recovery_box form {
+  width: 100%;
 }
 
 .recovery_box input {
@@ -67,7 +66,7 @@ h1 {
 
 .recovery_box input[type="submit"] {
   color: #f6220a;
-  color: #000;
+  color: #fff;
   cursor: pointer;
   border: none;
 }

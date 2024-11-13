@@ -1,18 +1,18 @@
-import React, { useState } from "react";
-import { NavLink } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
 import { UserOutlined } from "@ant-design/icons";
 import "./Menu.css";
 import "boxicons/css/boxicons.min.css";
 
-function Menu() {
+function Menu({ isLoggedIn, setIsLoggedIn }) {
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+  const navigate = useNavigate(); // Hook para navegação
 
-  const handleMouseEnter = () => {
-    setIsDropdownOpen(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsDropdownOpen(false);
+  const handleLogout = () => {
+    sessionStorage.removeItem("accessToken"); // Remove o token do sessionStorage
+    sessionStorage.removeItem("refreshToken"); // Remove o refreshToken
+    setIsLoggedIn(false); // Atualiza o estado de login
+    navigate("/"); // Redireciona para a página inicial após o logout
   };
 
   return (
@@ -24,7 +24,6 @@ function Menu() {
         <i className="bx bx-x" id="closeIcon"></i>
       </label>
       <nav className="navbar">
-        {/* Remove as tags <a> aninhadas dentro de NavLink */}
         <NavLink to="/" style={{ "--i": 2 }}>
           Home
         </NavLink>
@@ -35,20 +34,27 @@ function Menu() {
           Contato
         </NavLink>
 
-        <div
-          className="user-icon"
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <UserOutlined />
-          {isDropdownOpen && (
-            <div className="dropdown-menu">
-              <NavLink to="/profile">Perfil</NavLink>
-              <NavLink to="/dashboard">Dashboard</NavLink>
-              <NavLink to="/logout">Logout</NavLink>
-            </div>
-          )}
-        </div>
+        {isLoggedIn ? (
+          <div
+            className="user-icon"
+            onMouseEnter={() => setIsDropdownOpen(true)}
+            onMouseLeave={() => setIsDropdownOpen(false)}
+          >
+            <UserOutlined />
+            {isDropdownOpen && (
+              <div className="dropdown-menu">
+                <NavLink to="/dashboard">Dashboard</NavLink>
+                <a href="#" onClick={handleLogout}>
+                  Logout
+                </a>
+              </div>
+            )}
+          </div>
+        ) : (
+          <NavLink to="/login" style={{ "--i": 2 }}>
+            Login
+          </NavLink>
+        )}
       </nav>
     </header>
   );

@@ -9,33 +9,43 @@ import RegisterUser from "./pages/RegisterUser/RegisterUser";
 import Dashboard from "./components/Dashboard/Dashboard";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import Marketplace from "./pages/Marketplace/Marketplace";
+import React, { useState, useEffect } from "react";
 
 function App() {
-  return (
-    <>
-      <Router>
-        <Menu />
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/recuperarSenha" element={<RecuperarSenha />} />
-          <Route path="/registerCars" element={<RegisterCars />} />
-          <Route path="/registerUser" element={<RegisterUser />} />
-          <Route path="/marketplace" element={<Marketplace />} />
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
 
-          {/* Rota protegida pelo PrivateRoute */}
-          <Route
-            path="/dashboard"
-            element={
-              <PrivateRoute>
-                <Dashboard />
-              </PrivateRoute>
-            }
-          />
-        </Routes>
-        <Footer />
-      </Router>
-    </>
+  useEffect(() => {
+    // Verifica se o token de acesso está armazenado no sessionStorage
+    const token = sessionStorage.getItem("accessToken");
+    setIsLoggedIn(!!token); // Atualiza o estado de login
+  }, []);
+
+  return (
+    <Router>
+      <Menu isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route
+          path="/login"
+          element={<Login setIsLoggedIn={setIsLoggedIn} />}
+        />
+        <Route path="/recuperarSenha" element={<RecuperarSenha />} />
+        <Route path="/registerCars" element={<RegisterCars />} />
+        <Route path="/registerUser" element={<RegisterUser />} />
+        <Route path="/marketplace" element={<Marketplace />} />
+
+        {/* Rota protegida pelo PrivateRoute */}
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <Dashboard />
+            </PrivateRoute>
+          }
+        />
+      </Routes>
+      <Footer />
+    </Router>
   );
 }
 

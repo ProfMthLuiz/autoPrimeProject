@@ -14,6 +14,7 @@ import CompToggleTheme from "./CompToggleTheme";
 
 // Import pages
 import RegisterCars from "../../pages/RegisterCars/RegisterCars";
+import CompListCars from "../ListCars/CompListCars";
 
 const { Header, Sider, Content } = Layout;
 
@@ -41,11 +42,7 @@ const CompDashboard = ({ handleLogout }) => {
           </div>
         );
       case "listarCarros":
-        return (
-          <div>
-            <h1>Lista de carros</h1>
-          </div>
-        );
+        return <CompListCars />;
       case "logout":
         return alert("LOGOUT");
       default:
