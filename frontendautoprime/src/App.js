@@ -10,6 +10,7 @@ import Dashboard from "./components/Dashboard/Dashboard";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import Anuncios from "./pages/anuncios/cars";
 import Contato from "./pages/contato/Contato";
+import Marketplace from "./pages/Marketplace/Marketplace";
 
 function App() {
   return (
@@ -24,6 +25,7 @@ function App() {
           <Route path="/registerUser" element={<RegisterUser />} />
           <Route path="/anuncios" element={<Anuncios />} />
           <Route path="/contact" element={<Contato />} />
+          <Route path="/marketplace" element={<Marketplace />} />
           <Route
             path="/dashboard"
             element={

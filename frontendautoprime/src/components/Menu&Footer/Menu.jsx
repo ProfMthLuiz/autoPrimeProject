@@ -28,7 +28,7 @@ function Menu() {
         <NavLink to="/" style={{ "--i": 2 }}>
           Home
         </NavLink>
-        <NavLink to="/registerCars" style={{ "--i": 2 }}>
+        <NavLink to="/marketplace" style={{ "--i": 2 }}>
           Marketplace
         </NavLink>
         <NavLink to="/contact" style={{ "--i": 2 }}>

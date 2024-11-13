@@ -86,16 +86,108 @@ app.post("/registerCars", upload.array("fotos", 10), (req, res) => {
   );
 });
 
-app.get("/anuncios", (req, res) => {
-  const query = "SELECT * FROM carros";
-  db.query(query, (err, results) => {
-    if (err) {
-      console.error("Erro ao buscar dados da tabela carros:", err);
-      console.log("eroooooo");
-      return res.status(500).json({ message: "Erro ao buscar os carros." });
+// Rota para buscar carros com filtros e paginação
+app.get("/cars/catalogo", (req, res) => {
+  const { precoMax, marca, modelo, ano, page = 1, limit = 12 } = req.query;
+
+  // Validação dos parâmetros de paginação
+  if (isNaN(page) || page < 1) {
+    return res.status(400).json({ message: "Página inválida." });
+  }
+  if (isNaN(limit) || limit < 1) {
+    return res.status(400).json({ message: "Limite inválido." });
+  }
+
+  const offset = (page - 1) * limit;
+
+  let query = "SELECT * FROM carros WHERE 1=1";
+  let countQuery = "SELECT COUNT(*) as total FROM carros WHERE 1=1";
+  let params = [];
+
+  // Adicionando filtros de preço
+  if (precoMax) {
+    query += " AND preco <= ?";
+    countQuery += " AND preco <= ?";
+    params.push(precoMax);
+  }
+
+  // Adicionando filtro de marca
+  if (marca) {
+    query += " AND marca LIKE ?";
+    countQuery += " AND marca LIKE ?";
+    params.push(`%${marca}%`);
+  }
+
+  // Adicionando filtro de modelo
+  if (modelo) {
+    query += " AND modelo LIKE ?";
+    countQuery += " AND modelo LIKE ?";
+    params.push(`%${modelo}%`);
+  }
+
+  // Adicionando filtro de ano
+  if (ano) {
+    query += " AND ano = ?";
+    countQuery += " AND ano = ?";
+    params.push(ano);
+  }
+
+  // Adicionando paginação
+  query += " LIMIT ? OFFSET ?";
+  params.push(parseInt(limit), offset);
+
+  // Primeiro, obtém o total de registros para calcular o total de páginas
+  db.query(countQuery, params.slice(0, -2), (countErr, countResult) => {
+    if (countErr) {
+      console.error("Erro ao contar carros:", countErr);
+      return res.status(500).json({ message: "Erro ao buscar carros." });
     }
-    res.json(results);
-    console.log(results);
+
+    const totalItems = countResult[0].total;
+    const totalPages = Math.ceil(totalItems / limit);
+
+    // Executa a consulta com paginação para obter os carros filtrados
+    db.query(query, params, (err, results) => {
+      if (err) {
+        console.error("Erro ao buscar carros:", err);
+        return res.status(500).json({ message: "Erro ao buscar carros." });
+      }
+
+      res.json({
+        results,
+        page: parseInt(page),
+        totalPages,
+        totalItems,
+      });
+    });
+  });
+});
+
+// Rota para buscar sugestões de marcas ou modelos
+app.get("/cars/autoComplete", (req, res) => {
+  const { query } = req.query;
+
+  // Verifica se o parâmetro de busca foi fornecido
+  if (!query) {
+    return res.status(400).json({ message: "A consulta é obrigatória." });
+  }
+
+  // Consulta ao banco de dados para buscar marcas e modelos
+  const searchQuery = `%${query}%`;
+  const queryString =
+    "SELECT DISTINCT marca, modelo FROM carros WHERE marca LIKE ? OR modelo LIKE ? LIMIT 10";
+  db.query(queryString, [searchQuery, searchQuery], (err, results) => {
+    if (err) {
+      console.error("Erro ao buscar sugestões:", err);
+      return res.status(500).json({ message: "Erro ao buscar sugestões." });
+    }
+
+    // Mapeia as sugestões para um formato que o AutoComplete do Ant Design pode usar
+    const suggestions = results.map((result) => ({
+      value: result.modelo, // Ou use result.marca se quiser sugerir marcas também
+    }));
+
+    res.json({ suggestions });
   });
 });
 
@@ -206,9 +298,6 @@ app.post("/login", (req, res) => {
     // Gerar tokens
     const accessToken = generateAccessToken(user);
     const refreshToken = generateRefreshToken(user);
-
-    // Você pode salvar o refresh token no banco de dados ou em memória
-    // Exemplo: Salvar o refresh token no banco de dados associado ao usuário
 
     return res.status(200).json({
       success: true,
