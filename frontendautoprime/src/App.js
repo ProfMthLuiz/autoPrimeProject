@@ -8,6 +8,7 @@ import RegisterCars from "./pages/RegisterCars/RegisterCars";
 import RegisterUser from "./pages/RegisterUser/RegisterUser";
 import Dashboard from "./components/Dashboard/Dashboard";
 import PrivateRoute from "./PrivateRoute/PrivateRoute";
+import Contato from "./pages/contato/Contato";
 import Marketplace from "./pages/Marketplace/Marketplace";
 import React, { useState, useEffect } from "react";
 
@@ -33,8 +34,8 @@ function App() {
         <Route path="/registerCars" element={<RegisterCars />} />
         <Route path="/registerUser" element={<RegisterUser />} />
         <Route path="/marketplace" element={<Marketplace />} />
+        <Route path="/contact" element={<Contato />} />
 
-        {/* Rota protegida pelo PrivateRoute */}
         <Route
           path="/dashboard"
           element={

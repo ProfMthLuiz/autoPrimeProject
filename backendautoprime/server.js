@@ -344,7 +344,6 @@ app.post("/logout", (req, res) => {
   res.json({ message: "Logout bem-sucedido." });
 });
 
-// Rota para excluir um carro pelo ID
 app.delete("/cars/:id", verifyToken, (req, res) => {
   const { id } = req.params;
 
