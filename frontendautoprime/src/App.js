@@ -24,7 +24,6 @@ function App() {
           <Route path="/registerUser" element={<RegisterUser />} />
           <Route path="/anuncios" element={<Anuncios />} />
           <Route path="/contact" element={<Contato />} />
-          {/* Rota protegida pelo PrivateRoute */}
           <Route
             path="/dashboard"
             element={
