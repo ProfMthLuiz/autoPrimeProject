@@ -1,9 +1,14 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useContext } from "react";
 import styles from "./Marketplace.module.css";
 import { SearchOutlined } from "@ant-design/icons";
 import { AutoComplete, Input } from "antd";
+import { FaCartShopping } from "react-icons/fa6";
+import { HiOutlineShoppingCart } from "react-icons/hi2";
 import axios from "axios";
 import debounce from "lodash.debounce";
+
+import AppContext from "../../context/AppContext";
+import ShoppingCart from "../../components/ShoppingCart/ShoppingCart";
 
 const Marketplace = () => {
   const [carros, setCarros] = useState([]);
@@ -25,6 +30,8 @@ const Marketplace = () => {
   const [minPrice, setMinPrice] = useState(0);
   const [maxPriceCalled, setMaxPriceCalled] = useState(false);
   const [autoCompleteOptions, setAutoCompleteOptions] = useState([]);
+  const { cartItems, setCartItems, isCartVisible, setIsCartVisible } =
+    useContext(AppContext);
 
   useEffect(() => {
     // Sempre que os filtros ou a página mudarem, buscamos os carros
@@ -195,8 +202,38 @@ const Marketplace = () => {
     }
   };
 
+  const handleAddCart = (carro) => {
+    setCartItems((prevCartItems) => {
+      // Verifica se o carro já está no carrinho
+      const produtoExistente = prevCartItems.find(
+        (item) => item.id_cars === carro.id_cars
+      );
+
+      if (produtoExistente) {
+        // Cria uma nova lista do carrinho com a quantidade atualizada
+        return prevCartItems.map((item) =>
+          item.id_cars === carro.id_cars
+            ? { ...item, quantidade: item.quantidade + 1 } // Cria um novo objeto com a quantidade incrementada
+            : item
+        );
+      }
+
+      // Adiciona um novo item ao carrinho com quantidade inicial 1
+      return [...prevCartItems, { ...carro, quantidade: 1 }];
+    });
+  };
+
   return (
     <section className={styles.marketplace}>
+      <button
+        className={styles.btn_cart}
+        onClick={() => setIsCartVisible(!isCartVisible)}
+      >
+        <HiOutlineShoppingCart />
+        {cartItems.length > 0 && (
+          <span className={styles.cart_status}>{cartItems.length}</span>
+        )}
+      </button>
       <div className={styles.search}>
         <div className={styles.search_box}>
           <AutoComplete
@@ -217,8 +254,8 @@ const Marketplace = () => {
           <form id="filtroForm">
             <div className={styles.filtro_item}>
               <h2 className={styles.title}>Marca</h2>
-              {marcas.map((marca) => (
-                <label key={marca} className={styles.custom_checkbox}>
+              {marcas.map((marca, index) => (
+                <label key={marca || index} className={styles.custom_checkbox}>
                   <input
                     type="checkbox"
                     value={marca}
@@ -230,6 +267,7 @@ const Marketplace = () => {
                 </label>
               ))}
             </div>
+
             <div className={styles.filtro_item}>
               <h2 className={styles.title}>Modelo</h2>
               {modelos.map((modelo) => (
@@ -248,7 +286,7 @@ const Marketplace = () => {
             <div className={styles.filtro_item}>
               <h2 className={styles.title}>Ano</h2>
               {anos.map((ano) => (
-                <label key={ano} className={styles.custom_checkbox}>
+                <label key={ano.toString()} className={styles.custom_checkbox}>
                   <input
                     type="checkbox"
                     value={ano.toString()}
@@ -260,6 +298,7 @@ const Marketplace = () => {
                 </label>
               ))}
             </div>
+
             <div className={styles.filtro_item}>
               <h2 className={styles.title}>Preço</h2>
               <div className={styles.price}>
@@ -287,6 +326,12 @@ const Marketplace = () => {
             <div className={styles.container}>
               {carros.map((carro) => (
                 <div key={carro.id} className={styles.card}>
+                  <a
+                    onClick={() => handleAddCart(carro)}
+                    className={styles.addCart}
+                  >
+                    <FaCartShopping />
+                  </a>
                   <div className={styles.imgBx}>
                     <img
                       src={
@@ -324,6 +369,7 @@ const Marketplace = () => {
           </div>
         </div>
       </div>
+      <ShoppingCart />
     </section>
   );
 };

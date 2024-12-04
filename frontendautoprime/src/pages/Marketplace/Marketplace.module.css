@@ -26,6 +26,36 @@ body {
   background-color: #1f1f1f;
 }
 
+.marketplace .btn_cart {
+  width: 50px;
+  height: 40px;
+  padding: 7px;
+  font-size: 30px;
+  border: none;
+  position: absolute;
+  top: 70px;
+  right: 10px;
+  text-align: center;
+  color: #ddd;
+  background: transparent;
+  cursor: pointer;
+  z-index: 40;
+}
+
+.marketplace .cart_status {
+  width: 20px;
+  height: 20px;
+  line-height: 20px;
+  position: absolute;
+  top: 0;
+  left: 25px;
+  font-size: 14px;
+  background-color: #ff0000;
+  color: #1f1f1f;
+  border-radius: 10px;
+  font-weight: 500;
+}
+
 .search {
   width: 25%;
   background: #181818;
@@ -136,6 +166,30 @@ body {
   background: #181818;
   border-radius: 20px;
   overflow: hidden;
+}
+
+.container .card .addCart {
+  position: absolute;
+  top: 5px;
+  right: 10px;
+  width: 32px;
+  height: 32px;
+  padding: 5px;
+  border-radius: 100%;
+  background-color: #181818;
+  color: #ee350d;
+  text-align: center;
+  cursor: pointer;
+  line-height: 28px;
+  z-index: 21;
+  transition: all 0.8s ease;
+  transform: translateX(50px);
+  opacity: 0;
+}
+
+.container .card:hover .addCart {
+  transform: translateX(0px);
+  opacity: 1;
 }
 
 .container .card::before {

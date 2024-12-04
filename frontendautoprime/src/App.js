@@ -11,6 +11,8 @@ import PrivateRoute from "./PrivateRoute/PrivateRoute";
 import Contato from "./pages/contato/Contato";
 import Marketplace from "./pages/Marketplace/Marketplace";
 import React, { useState, useEffect } from "react";
+import Provider from "./context/Provider";
+import ShoppingCart from "./components/ShoppingCart/ShoppingCart";
 
 function App() {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
@@ -22,31 +24,34 @@ function App() {
   }, []);
 
   return (
-    <Router>
-      <Menu isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route
-          path="/login"
-          element={<Login setIsLoggedIn={setIsLoggedIn} />}
-        />
-        <Route path="/recuperarSenha" element={<RecuperarSenha />} />
-        <Route path="/registerCars" element={<RegisterCars />} />
-        <Route path="/registerUser" element={<RegisterUser />} />
-        <Route path="/marketplace" element={<Marketplace />} />
-        <Route path="/contact" element={<Contato />} />
+    <Provider>
+      <Router>
+        <Menu isLoggedIn={isLoggedIn} setIsLoggedIn={setIsLoggedIn} />
+        <Routes>
+          <Route path="/" element={<Home />} />
+          <Route
+            path="/login"
+            element={<Login setIsLoggedIn={setIsLoggedIn} />}
+          />
+          <Route path="/recuperarSenha" element={<RecuperarSenha />} />
+          <Route path="/registerCars" element={<RegisterCars />} />
+          <Route path="/registerUser" element={<RegisterUser />} />
+          <Route path="/marketplace" element={<Marketplace />} />
+          <Route path="/contact" element={<Contato />} />
+          <Route path="/cart" element={<ShoppingCart />} />
 
-        <Route
-          path="/dashboard"
-          element={
-            <PrivateRoute>
-              <Dashboard />
-            </PrivateRoute>
-          }
-        />
-      </Routes>
-      <Footer />
-    </Router>
+          <Route
+            path="/dashboard"
+            element={
+              <PrivateRoute>
+                <Dashboard />
+              </PrivateRoute>
+            }
+          />
+        </Routes>
+        <Footer />
+      </Router>
+    </Provider>
   );
 }
 

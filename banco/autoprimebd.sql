@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Tempo de geração: 25/10/2024 às 12:35
+-- Tempo de geração: 04/12/2024 às 13:37
 -- Versão do servidor: 10.4.32-MariaDB
 -- Versão do PHP: 8.2.12
 
@@ -42,10 +42,10 @@ CREATE TABLE `carros` (
 --
 
 INSERT INTO `carros` (`id_cars`, `marca`, `modelo`, `ano`, `preco`, `descricao`, `imagens`) VALUES
-(1, 'Toyota', 'Corolla', 2021, 90000.00, 'Sedan confortável e econômico.', 'url_imagem_toyota'),
-(2, 'Honda', 'Civic', 2020, 85000.00, 'Estilo e performance em um único carro.', 'url_imagem_honda'),
-(3, 'Ford', 'Mustang', 2022, 150000.00, 'Um ícone de esportividade e potência.', 'url_imagem_ford'),
-(4, 'Toyota', 'Corolla', 1999, 100000.00, 'Corolla Prata!', '[\"1729078595933.jpg\",\"1729078595941.jpg\",\"1729078595950.jfif\"]');
+(1, 'Toyota', 'Corolla', 2021, 90000.00, 'Corolla branco white!', '[\"corolla.png\"]'),
+(2, 'Honda', 'Civic', 2020, 85000.00, 'Estilo e performance em um único carro.', '[\"civic.png\"]'),
+(3, 'Ford', 'Mustang', 2022, 150000.00, 'Um ícone de esportividade e potência.', '[\"mustang.png\"]'),
+(4, 'Toyota', 'Corolla', 1999, 100000.00, 'Corolla Prata!', '[\"corolla_antigo.png\"]');
 
 -- --------------------------------------------------------
 
@@ -78,7 +78,8 @@ INSERT INTO `usuarios` (`id_users`, `nome`, `sobrenome`, `email`, `celular`, `cp
 (2, 'Maria', 'Oliveira', 'maria.oliveira@email.com', '11987654322', '10987654321', 'MG2345678', 'senha456', '98765-432', 'Avenida Brasil', '200', 'Jardins', 'Rio de Janeiro'),
 (3, 'Carlos', 'Souza', 'carlos.souza@email.com', '11987654323', '98765432100', 'MG3456789', 'senha789', '54321-098', 'Praça da Liberdade', '300', 'Liberdade', 'Belo Horizonte'),
 (4, 'Thiago', 'Denadai', 'thiagodenadai@teste.com', '$2b$10$yD04wqQS', '(00) 00000-', '000.000.000-00', '00.000.000-0', '13172-705', 'Avenida Ivo Trevisan', '00', 'Jardim Consteca', 'Sumaré'),
-(5, 'Guilherme', 'Restio', 'guirestio@gmail.com', '(99) 99999-9999', '111.111.111', '22.222.222-2', '$2b$10$Du3qm.kVcJzWd/hyxdZ.Hutyj2ZYsVFw/G14OqR7gUqWJRvrL1y.O', '13172-705', 'Avenida Ivo Trevisan', '222', 'Jardim Consteca', 'Sumaré');
+(5, 'Guilherme', 'Restio', 'guirestio@gmail.com', '(99) 99999-9999', '111.111.111', '22.222.222-2', '$2b$10$Du3qm.kVcJzWd/hyxdZ.Hutyj2ZYsVFw/G14OqR7gUqWJRvrL1y.O', '13172-705', 'Avenida Ivo Trevisan', '222', 'Jardim Consteca', 'Sumaré'),
+(6, 'Teste', 'Teste', 'teste@teste.com', '(99) 99999-9999', '000.000.000', '88.888.888-8', '$2b$10$eZws9o5pzxtbfNx2/Ha4w.Bo6TTFPorgYmwDsZubWd/oDfThEAIeu', '13172-705', 'Avenida Ivo Trevisan', '111', 'Jardim Consteca', 'Sumaré');
 
 -- --------------------------------------------------------
 
@@ -137,13 +138,13 @@ ALTER TABLE `usuarios_carros`
 -- AUTO_INCREMENT de tabela `carros`
 --
 ALTER TABLE `carros`
-  MODIFY `id_cars` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id_cars` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_users` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id_users` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de tabela `usuarios_carros`
